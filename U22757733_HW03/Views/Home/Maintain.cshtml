@@ -1,0 +1,213 @@
+﻿@model U22757733_HW03.Models.ViewModel
+@{
+    ViewBag.Title = "Maintain";
+}
+
+<style>
+ body{
+     background-color:darkgray; }
+</style>
+
+<body>
+<h2>Maintain</h2>
+
+<div class=" row">
+    <div class="col-6">
+        <h3>Authors</h3>
+
+        <p>
+            <a href="@Url.Action("Create", "authors")" class="btn btn-lg" style="border-radius: 20px; background-color:coral; color:white">Create</a>
+        </p>
+        <table  class="table table-bordered" style="background-color: lightcoral">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.authors.FirstOrDefault().name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.authors.FirstOrDefault().surname)
+                </th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model.authors)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.surname)
+                    </td>
+                    <td>
+                        <a href="#" class="edit-link" data-url="@Url.Action("Edit", "authors", new { id = item.authorId })">Edit</a>
+                        <a href="#" class="details-link" data-url="@Url.Action("Details", "authors", new { id = item.authorId })">Details</a>
+                        <a href="#" class="delete-link" data-url="@Url.Action("Delete", "authors", new { id = item.authorId })">Delete</a>
+
+                    </td>
+                </tr>
+            }
+
+        </table>
+
+    </div>
+    <div class="col-6">
+        <h3>Types</h3>
+        <p>
+            <a href="@Url.Action("Create", "types")" class="btn btn-lg" style="border-radius: 20px; background-color:coral; color:white">Create</a>
+        </p>
+        <table  class="table table-bordered" style="background-color: lightcoral">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.types.FirstOrDefault().name)
+                </th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model.types)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.name)
+                    </td>
+                    <td>
+                        <a href="#" class="edit-link" data-url="@Url.Action("Edit", "types", new { id = item.typeId })">Edit</a>
+                        <a href="#" class="details-link" data-url="@Url.Action("Details", "types", new { id = item.typeId })">Details</a>
+                        <a href="#" class="delete-link" data-url="@Url.Action("Delete", "types", new { id = item.typeId })">Delete</a>
+
+                    </td>
+                </tr>
+            }
+
+        </table>
+
+    </div>
+</div>
+<div class=" row">
+    <h3>Borrows</h3>
+    <p>
+        <a href="@Url.Action("Create", "borrows")" class="btn btn-lg" style="border-radius: 20px; background-color:coral; color:white">Create</a>
+    </p>
+    <table  class="table table-bordered" style="background-color: lightcoral">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.borrows.FirstOrDefault().takenDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.borrows.FirstOrDefault().broughtDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.borrows.FirstOrDefault().book.name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.borrows.FirstOrDefault().student.name)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model.borrows)
+        {
+            <tr>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.takenDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.broughtDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.book.name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.student.name)
+                </td>
+                <td>
+                    <a href="#" class="edit-link" data-url="@Url.Action("Edit", "borrows", new { id = item.borrowId })">Edit</a>
+                    <a href="#" class="details-link" data-url="@Url.Action("Details", "borrows", new { id = item.borrowId })">Details</a>
+                    <a href="#" class="delete-link" data-url="@Url.Action("Delete", "borrows", new { id = item.borrowId })">Delete</a>
+
+                </td>
+            </tr>
+        }
+
+    </table>
+
+
+</div>
+
+<div id="myModal" class="modal fade" tabindex="-1" >
+    <div class="modal-dialog" >
+        <div class="modal-content" style="background-color:coral">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modal-content">
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(function () {
+        // Function to handle Edit link click event in the Combined View and Details modal
+        $(".edit-link, .edit-link-in-modal").click(function (e) {
+            e.preventDefault();
+            var url = $(this).data("url");
+
+            $.get(url, function (data) {
+                $("#modal-content").empty();
+                $("#modal-content").html(data);
+                $("#myModal").modal("show");
+            });
+        });
+
+        $(".delete-link, .delete-link-in-modal").click(function (e) {
+            e.preventDefault();
+            var url = $(this).data("url");
+
+            $.get(url, function (data) {
+                $("#modal-content").empty();
+                $("#modal-content").html(data);
+                $("#myModal").modal("show");
+            });
+        });
+
+        $("details, .details-link-in-modal").click(function (e) {
+            e.preventDefault();
+            var url = $(this).data("url");
+
+            $.get(url, function (data) {
+                $("#modal-content").empty();
+                $("#modal-content").html(data);
+                $("#myModal").modal("show");
+            });
+        });
+        // Function to handle form submission within the modal
+        $("#modal-content").on("submit", "form", function (e) {
+            e.preventDefault();
+            var form = $(this);
+            var url = form.attr("action");
+            var formData = form.serialize();
+
+            $.post(url, formData, function (data) {
+                $("#myModal").modal("hide");
+                location.reload();
+            });
+        });
+
+        // Function to handle other links (details, delete, create) within the modal
+        $(".details-link .delete-link, .create-link, .create-lookup-link").click(function (e) {
+            e.preventDefault();
+            var url = $(this).data("url");
+
+            $.get(url, function (data) {
+                $("#modal-content").empty();
+                $("#modal-content").html(data);
+                $("#myModal").modal("show");
+            });
+        });
+    });
+</script>

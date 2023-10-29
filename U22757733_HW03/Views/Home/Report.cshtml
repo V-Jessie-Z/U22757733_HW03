@@ -1,0 +1,52 @@
+﻿
+@{
+    ViewBag.Title = "Report";
+}
+
+<style>
+    body {
+        background-color: darkgray;
+    }
+</style>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<body>
+    <h2>Report</h2>
+    <div id="chrt2015" style="height: 370px; width: 100%;">
+
+
+    </div>
+
+  
+    <script>
+    $(function () {
+        var mData = @Html.Raw(Json.Encode(ViewBag.MonthData));
+        var colors = ["#0000FF", "#D2691E", "#8A2BE2", "#008B8B",
+            "#8B008B", "#DAA520", "#8B0000", "#006400",
+            "#DB7093", "#98FB98", "#8B4513 ", "#008080"];
+        function monthtoName(mNumber)
+        {
+            const months = ["January", "February", "March", "April", "May", "June", "July", "August", "Septmeber", "October", "November", "December"];
+            return months[mNumber - 1]
+        }
+
+        var dataPoints = mData.map(function (data) {
+            return { label: monthtoName(data.Month), y: data.Count, color: colors[data.Month - 1] , };
+
+        });
+
+        var chart = new CanvasJS.Chart("chrt2015", {
+
+            title:
+                { text: "Books borrowed each month" },
+            data: [{
+                type: "bar",
+                dataPoints: dataPoints
+            }]
+        });
+
+        chart.render();
+    });
+    </script>
+</body>

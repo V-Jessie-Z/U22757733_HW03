@@ -1,0 +1,247 @@
+﻿@model U22757733_HW03.Models.ViewModel
+@using PagedList.Mvc;
+@using PagedList;
+
+@{
+    ViewBag.Title = "ComdinedHomeIndex";
+}
+
+<style>
+
+    .create-lookup-link {
+        background-color: #3498db;
+        color: #fff;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+
+    body{
+        background-color:darkgray;
+    }
+    
+        /* Change the button color on hover */
+        .create-lookup-link:hover {
+            background-color: #27898b;
+        }
+</style>
+@{
+    var nullBorrow = Model.borrows.Where(x => x.takenDate == null).Select(x => x.bookId).ToList();
+}
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+<body>
+<h2>Home</h2>
+
+<div class="row">
+    <div class="col-6">
+        <h3>Students</h3>
+        <p>
+            <a href="@Url.Action("Create", "students")" class="btn btn-lg" style="border-radius: 20px; background-color:coral; color:white">Create</a>
+        </p>
+        <table  class="table table-bordered" style="background-color:lightcoral">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.students.FirstOrDefault().name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.students.FirstOrDefault().surname)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.students.FirstOrDefault().birthdate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.students.FirstOrDefault().gender)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.students.FirstOrDefault().@class)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.students.FirstOrDefault().point)
+                </th>
+
+            </tr>
+
+            @foreach (var item in Model.students)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.surname)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.birthdate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.gender)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.@class)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.point)
+                    </td>
+
+                    <td class="text-end">
+                        <!-- Add text-end class here -->
+                        <a href="#" class="details-link" data-url="@Url.Action("Details", "students", new { id = item.studentId })">Details</a>
+                    </td>
+                </tr>
+            }
+
+        </table>
+       
+
+    </div>
+    
+
+    <br />
+
+
+    <div class=" col-6">
+        <h3>Books</h3>
+
+        <p>
+            <a href="@Url.Action("Create", "books")" class="btn btn-lg" style="border-radius: 20px; background-color:coral; color:white">Create</a>
+
+        </p>
+        <table class="table table-bordered" style="background-color: lightcoral">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.books.FirstOrDefault().name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.books.FirstOrDefault().pagecount)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.books.FirstOrDefault().point)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.books.FirstOrDefault().author.name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.types.FirstOrDefault().name)
+                </th>
+                <th> status</th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model.books)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.pagecount)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.point)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.author.name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.type.name)
+                    </td>
+                    @if (nullBorrow != null && nullBorrow.Contains(item.bookId))
+                    {
+                        <td style="color: red">Out</td>
+                    }
+                    else
+                    {
+                        <td style="color: green">Available</td>
+                    }
+                    <td class="text-end">
+        
+                        <a href="#" class="details-link" data-url="@Url.Action("Details", "books", new { id = item.bookId })">Details</a>
+                    </td>
+
+
+                </tr>
+            }
+
+        </table>
+
+   
+    </div>
+
+</div>
+<div id="myModal" class="modal fade" tabindex="-1" >
+    <div class="modal-dialog" >
+        <div class="modal-content" style="background-color:coral">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modal-content">
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(function () {
+        // Function to handle Edit link click event in the Combined View and Details modal
+        $(".edit-link, .edit-link-in-modal").click(function (e) {
+            e.preventDefault();
+            var url = $(this).data("url");
+
+            $.get(url, function (data) {
+                $("#modal-content").empty();
+                $("#modal-content").html(data);
+                $("#myModal").modal("show");
+            });
+        });
+
+        $(".delete-link, .delete-link-in-modal").click(function (e) {
+            e.preventDefault();
+            var url = $(this).data("url");
+
+            $.get(url, function (data) {
+                $("#modal-content").empty();
+                $("#modal-content").html(data);
+                $("#myModal").modal("show");
+            });
+        });
+
+        $("details, .details-link-in-modal").click(function (e) {
+            e.preventDefault();
+            var url = $(this).data("url");
+
+            $.get(url, function (data) {
+                $("#modal-content").empty();
+                $("#modal-content").html(data);
+                $("#myModal").modal("show");
+            });
+        });
+        // Function to handle form submission within the modal
+        $("#modal-content").on("submit", "form", function (e) {
+            e.preventDefault();
+            var form = $(this);
+            var url = form.attr("action");
+            var formData = form.serialize();
+
+            $.post(url, formData, function (data) {
+                $("#myModal").modal("hide");
+                location.reload();
+            });
+        });
+
+        // Function to handle other links (details, delete, create) within the modal
+        $(".details-link .delete-link, .create-link, .create-lookup-link").click(function (e) {
+            e.preventDefault();
+            var url = $(this).data("url");
+
+            $.get(url, function (data) {
+                $("#modal-content").empty();
+                $("#modal-content").html(data);
+                $("#myModal").modal("show");
+            });
+        });
+    });
+</script>
